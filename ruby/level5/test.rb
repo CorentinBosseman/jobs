@@ -15,21 +15,21 @@ class Level5UnitTest < Minitest::Test
       "id"         => 1,
       "car_id"     => 1,
       "start_date" => "2015-12-8",
-      "end_date"   => "2015-12-8",
+      "end_date"   => "2015-12-10",
       "distance"   => 100
     }
     Rental.new(attrs, car, %w[gps baby_seat])
   end
 
-  def test_expected_actors_payment
-    actors = rental.actors_payment
-    amounts = actors.to_h { |a| [a[:who], a[:amount]] }
-    assert_equal 3700, amounts["driver"]
-    assert_equal 2800, amounts["owner"]
-    assert_equal  450, amounts["insurance"]
-    assert_equal  100, amounts["assistance"]
-    assert_equal  350, amounts["drivy"]
-    assert_equal amounts["driver"], amounts["owner"] + amounts["insurance"] + amounts["assistance"] + amounts["drivy"]
+  def test_actors_payment_three_days
+    expected = [
+      { who: "driver",     type: "debit",  amount: 8700 },
+      { who: "owner",      type: "credit", amount: 6720 },
+      { who: "insurance",  type: "credit", amount: 990  },
+      { who: "assistance", type: "credit", amount: 300  },
+      { who: "drivy",      type: "credit", amount: 690  }
+    ]
+    assert_equal expected, rental.actors_payment
   end
 
   def test_output

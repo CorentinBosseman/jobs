@@ -38,7 +38,7 @@ module Level5
       validate!
     end
 
-    def options_price(beneficiary)
+    def compute_options_price_for?(beneficiary)
       @options.sum do |opt|
         rental_option = OPTIONS[opt]
         next 0 unless rental_option
@@ -54,8 +54,8 @@ module Level5
       drivy_fee      = commission - insurance_fee - assistance_fee
       owner_base     = base - commission
 
-      options_credited_to_owner = options_price(:owner)
-      options_credited_to_drivy = options_price(:drivy)
+      options_credited_to_owner = compute_options_price_for?(:owner)
+      options_credited_to_drivy = compute_options_price_for?(:drivy)
 
       [
         { who: "driver",    type: "debit",  amount: base + options_credited_to_owner + options_credited_to_drivy },
